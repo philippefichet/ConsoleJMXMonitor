@@ -6,7 +6,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-mainClassName = "fr.philippefichet.wildflyjmx.Main"
+mainClassName = "fr.philippefichet.consolejmxmonitor.Main"
 
 buildscript {
     repositories {
