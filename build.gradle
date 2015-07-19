@@ -1,0 +1,46 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+mainClassName = "fr.philippefichet.wildflyjmx.Main"
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.2'
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+//    compile 'org.wildfly:wildfly-client-all:9.0.0.Final'
+    compile 'com.googlecode.lanterna:lanterna:2.1.9'
+    compile files(System.getProperty("java.home") + File.separator + ".." + File.separator + "lib" + File.separator + "tools.jar")
+}
+
+task jvm << {
+    println(System.getProperties())
+}
+
+jar {
+  manifest {
+    attributes("Main-Class": mainClassName)
+  }
+}
+
+shadowJar {
+  dependencies {
+    exclude System.getProperty("java.home") + File.separator + ".." + File.separator + "lib" + File.separator + "tools.jar"
+  }
+}
