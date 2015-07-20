@@ -27,6 +27,7 @@ dependencies {
 //    compile 'org.wildfly:wildfly-client-all:9.0.0.Final'
     compile 'com.googlecode.lanterna:lanterna:2.1.9'
     compile files(System.getProperty("java.home") + File.separator + ".." + File.separator + "lib" + File.separator + "tools.jar")
+    testCompile 'junit:junit:4.12'
 }
 
 task jvm << {
