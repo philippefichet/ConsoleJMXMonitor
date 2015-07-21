@@ -1,5 +1,7 @@
 # ConsoleJMXMonitor
 
+[![Stories in Ready](https://badge.waffle.io/philippefichet/ConsoleJMXMonitor.svg?label=ready&title=Ready)](http://waffle.io/philippefichet/ConsoleJMXMonitor)
+
 Minimaliste console application to show Heap and Thread via JMX.
 - Local JMV with PID
 - Remote JVM with url
