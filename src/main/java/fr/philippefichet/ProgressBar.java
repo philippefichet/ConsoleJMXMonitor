@@ -14,6 +14,7 @@ public class ProgressBar {
     private long max;
     private String progressBar;
     private int size;
+    private char progressSymbole = '|';
 
     public ProgressBar(long value, long max, int size) {
         this.value = value;
@@ -21,6 +22,14 @@ public class ProgressBar {
         this.size = size;
     }
 
+    public char getProgressSymbole() {
+        return progressSymbole;
+    }
+
+    public void setProgressSymbole(char progressSymbole) {
+        this.progressSymbole = progressSymbole;
+    }
+    
     public long getValue() {
         return value;
     }
@@ -36,7 +45,7 @@ public class ProgressBar {
             sb.append("[");
             for (int i = 0; i < size - 2; i++) {
                 if (i <= (sizeValue - 2)) {
-                    sb.append("|");
+                    sb.append(progressSymbole);
                 } else {
                     sb.append(" ");
                 }

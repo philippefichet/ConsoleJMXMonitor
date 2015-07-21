@@ -30,6 +30,13 @@ public class ProgressBarTest {
     }
     
     @Test
+    public void test50PercentChangeSymbole() {
+        ProgressBar progressBar = new ProgressBar(50L, 100L, 20);
+        progressBar.setProgressSymbole('-');
+        assertEquals("[---------         ]", progressBar.getProgressBar());
+    }
+    
+    @Test
     public void test100Percent() {
         ProgressBar progressBar = new ProgressBar(100L, 100L, 20);
         assertEquals("[||||||||||||||||||]", progressBar.getProgressBar());
