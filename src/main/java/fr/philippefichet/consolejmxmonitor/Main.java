@@ -1,60 +1,35 @@
 package fr.philippefichet.consolejmxmonitor;
 
 import com.googlecode.lanterna.TerminalFacade;
-import com.googlecode.lanterna.input.CharacterPattern;
-import com.googlecode.lanterna.input.GnomeTerminalProfile;
 import com.googlecode.lanterna.input.Key;
-import com.googlecode.lanterna.input.KeyMappingProfile;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.Terminal;
-import com.googlecode.lanterna.terminal.TerminalSize;
 import com.sun.tools.attach.AgentInitializationException;
 import com.sun.tools.attach.AgentLoadException;
 import com.sun.tools.attach.AttachNotSupportedException;
 import com.sun.tools.attach.VirtualMachine;
-import com.sun.tools.attach.VirtualMachineDescriptor;
-import com.sun.tools.attach.spi.AttachProvider;
+import fr.philippefichet.ProgressBar;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectStreamException;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.ThreadMXBean;
 import java.net.MalformedURLException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
-import javax.management.JMX;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanInfo;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
-import javax.management.Notification;
-import javax.management.NotificationFilter;
-import javax.management.NotificationListener;
-import javax.management.ObjectName;
 import javax.management.ReflectionException;
-import javax.management.openmbean.CompositeData;
-import javax.management.openmbean.CompositeType;
-import javax.management.openmbean.SimpleType;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -171,9 +146,12 @@ public class Main {
             Long maxHeap = heapMemoryUsage.getMax();
             screen.putString(0, row++, new Date().toString(), null, null);
             for (GarbageCollectorMXBean garbageCollectorMXBean : garbageCollectorMXBeans) {
-                screen.putString(0, row++, "GC[" + garbageCollectorMXBean.getObjectName() +"] " + garbageCollectorMXBean.getCollectionCount() + " " + "/" + garbageCollectorMXBean.getCollectionTime()/unit + " " + unitString, null, null);
+                screen.putString(0, row++, "GC[" + garbageCollectorMXBean.getObjectName() +"] " + garbageCollectorMXBean.getCollectionCount() + " " + "/" + garbageCollectorMXBean.getCollectionTime() + " ms.", null, null);
             }
-            screen.putString(0, row++, "Heap " + usedHeap/unit + " " + unitString + "/" + maxHeap/unit + " " + unitString, null, null);
+            String heapString = "Heap " + usedHeap/unit + " " + unitString + "/" + maxHeap/unit + " " + unitString;
+            ProgressBar progressBarHeap = new ProgressBar(usedHeap, maxHeap, terminal.getTerminalSize().getColumns() - heapString.length() - 1);
+            screen.putString(heapString.length() + 1, row, progressBarHeap.getProgressBar(), null, null);
+            screen.putString(0, row++, heapString, null, null);
             
             ThreadMXBean threadMXBean = ManagementFactory.getPlatformMXBean(connection, ThreadMXBean.class);
             List<ThreadInfo> threads = new ArrayList<>();
@@ -195,7 +173,6 @@ public class Main {
                     if (!exclude) {
                         maxThreadCpuTime = Math.max(maxThreadCpuTime, (long)Math.log10(cpuTime)-5);
                         threads.add(new ThreadInfo(threadId, cpuTime, name));
-//                        maxThreadName = Math.max(maxThreadName, name.length());
                     }
                 }
             }
